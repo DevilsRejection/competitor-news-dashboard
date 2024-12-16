@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const apiUrl = `https://newsapi.org/v2/everything?q=${Deloitte}&apiKey=${f120b69966b143c7b0b401cd2fb88c03}`;
         const apiUrl = `https://newsapi.org/v2/everything?q=${Globant}&apiKey=${f120b69966b143c7b0b401cd2fb88c03}`;
         try {
-          const response = await fetch(apiUrl);
+          const response = await fetch(apiUrl, { mode: 'cors' });
               if (!response.ok) {
                 const message =  `HTTP error! Status: ${response.status}`
                 console.error(`Failed to fetch news for ${company}:`, message);
