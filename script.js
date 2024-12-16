@@ -3,15 +3,16 @@ document.addEventListener('DOMContentLoaded', function () {
   const newsContainer = document.getElementById('news-container');
 
   async function fetchNewsForCompany(company) {
-    // Construct the API URL
-    const apiUrl = `https://localhost:3000/news?q=${company}`;
+    // Backend API URL
+    const apiUrl = `http://localhost:3000/news?q=${company}`;
 
     try {
-      const response = await fetch(apiUrl); // Fetch data from NewsAPI
+      const response = await fetch(apiUrl); // Fetch data from the backend
       if (!response.ok) {
         console.error(`Failed to fetch news for ${company}: HTTP Status ${response.status}`);
         return { company, articles: [] }; // Return empty articles on failure
       }
+
       const data = await response.json();
 
       // Check if articles are returned
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     } catch (error) {
       console.error(`Error fetching news for ${company}:`, error);
-      return { company, articles: [] };
+      return { company, articles: [] }; // Return empty articles on error
     }
   }
 
