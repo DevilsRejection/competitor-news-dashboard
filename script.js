@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function fetchNewsForCompany(company) {
         const apiUrl = `https://newsapi.org/v2/everything?q=${company}&apiKey=${f120b69966b143c7b0b401cd2fb88c03}`;
         try {
+          const apiUrl = `https://cors-anywhere.herokuapp.com/https://newsapi.org/v2/everything?q=${company}&apiKey=${f120b69966b143c7b0b401cd2fb88c03}`;
           const response = await fetch(apiUrl, { mode: 'cors' });
               if (!response.ok) {
                 const message =  `HTTP error! Status: ${response.status}`
