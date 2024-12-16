@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function fetchNewsForCompany(company) {
     // Construct the API URL
-    const apiUrl = `http://localhost:3000/news?q=${company}`;
+    const apiUrl = `https://localhost:3000/news?q=${company}`;
 
     try {
       const response = await fetch(apiUrl); // Fetch data from NewsAPI
