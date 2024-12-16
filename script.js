@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const apiKey = "f120b69966b143c7b0b401cd2fb88c03"; // Replace with your valid API key
   const companies = ["Accenture", "TCS", "Deloitte", "Globant", "EPAM", "Endava"]; // Companies to track
   const newsContainer = document.getElementById('news-container');
 
