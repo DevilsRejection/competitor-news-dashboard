@@ -5,8 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const newsContainer = document.getElementById('news-container');
 
     async function fetchNewsForCompany(company) {
-        const apiUrl = `https://newsapi.org/v2/everything?q=${company}&apiKey=${f120b69966b143c7b0b401cd2fb88c03}`;
-
+        const apiUrl = `https://newsapi.org/v2/everything?q=${Accenture}&apiKey=${f120b69966b143c7b0b401cd2fb88c03}`;
+        const apiUrl = `https://newsapi.org/v2/everything?q=${TCS}&apiKey=${f120b69966b143c7b0b401cd2fb88c03}`;
+        const apiUrl = `https://newsapi.org/v2/everything?q=${Deloitte}&apiKey=${f120b69966b143c7b0b401cd2fb88c03}`;
+        const apiUrl = `https://newsapi.org/v2/everything?q=${Globant}&apiKey=${f120b69966b143c7b0b401cd2fb88c03}`;
         try {
           const response = await fetch(apiUrl);
               if (!response.ok) {
