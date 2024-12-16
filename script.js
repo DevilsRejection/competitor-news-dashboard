@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function fetchNewsForCompany(company) {
     // Construct the API URL
-    const apiUrl = `https://cors-anywhere.herokuapp.com/https://newsapi.org/v2/everything?q=${company}&apiKey=${apiKey}`;
+    const apiUrl = `http://localhost:3000/news?q=${company}`;
 
     try {
       const response = await fetch(apiUrl); // Fetch data from NewsAPI
