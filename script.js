@@ -3,11 +3,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const newsContainer = document.getElementById('news-container');
 
   async function fetchNewsForCompany(company) {
-    // Backend API URL
     const apiUrl = `http://localhost:3000/news?q=${company}`;
 
     try {
-      const response = await fetch(apiUrl); // Fetch data from the backend
+      const response = await fetch(apiUrl);
       if (!response.ok) {
         console.error(`Failed to fetch news for ${company}: HTTP Status ${response.status}`);
         return { company, articles: [] }; // Return empty articles on failure
