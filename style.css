@@ -13,10 +13,9 @@ header {
 }
 
 main {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .company-news {
@@ -40,13 +39,47 @@ main {
 }
 
 .company-news li {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    position: relative;
 }
 
 .company-news li a {
-  text-decoration: none;
+    text-decoration: none;
+    color: #007bff;
 }
 
 .company-news li a:hover {
     text-decoration: underline;
+}
+
+/* Styling for the Summarize button */
+button {
+    display: inline-block;
+    margin: 8px 0;
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Styling for the summary content */
+.summary {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #007bff;
+    font-style: italic;
+    color: #555;
+    line-height: 1.4;
+    font-size: 14px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word;
 }
