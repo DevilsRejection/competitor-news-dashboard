@@ -45,7 +45,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const summaryButton = document.createElement('button');
                     summaryButton.textContent = "Summarize";
-                    summaryButton.onclick = () => fetchSummary(article.content, listItem);
+                    summaryButton.onclick = () => {
+    const articleText = `${article.title}. ${article.description}`;
+    fetchSummary(articleText, listItem);
+};
 
                     listItem.appendChild(summaryButton);
                     articleList.appendChild(listItem);
