@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const newsContainer = document.getElementById('news-container');
 
   async function fetchNewsForCompany(company) {
-    const apiUrl = `http://localhost:3000/news?q=${company}`;
+    const apiUrl = `http://127.0.0.1:3000/news?q=${company}`;
 
     try {
       const response = await fetch(apiUrl);
