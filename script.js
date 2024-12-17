@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const promises = companies.map(company => fetchNewsForCompany(company));
         const newsData = await Promise.all(promises);
 
-        newsContainer.innerHTML = ""; // Clear loading message
+        newsContainer.innerHTML = "";
 
         newsData.forEach((articles, index) => {
             const companyName = companies[index];
@@ -36,11 +36,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (articles.length > 0) {
                 articles.forEach(article => {
                     const listItem = document.createElement('li');
+
                     const link = document.createElement('a');
                     link.href = article.url;
                     link.textContent = article.title;
                     link.target = "_blank";
                     listItem.appendChild(link);
+
+                    const summaryButton = document.createElement('button');
+                    summaryButton.textContent = "Summarize";
+                    summaryButton.onclick = () => fetchSummary(article.content, listItem);
+
+                    listItem.appendChild(summaryButton);
                     articleList.appendChild(listItem);
                 });
             } else {
@@ -53,6 +60,26 @@ document.addEventListener('DOMContentLoaded', function () {
             companyDiv.appendChild(articleList);
             newsContainer.appendChild(companyDiv);
         });
+    }
+
+    async function fetchSummary(content, listItem) {
+        try {
+            const response = await fetch('http://127.0.0.1:3000/summarize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content })
+            });
+
+            if (!response.ok) throw new Error("Failed to fetch summary");
+
+            const data = await response.json();
+            const summaryDiv = document.createElement('div');
+            summaryDiv.classList.add('summary');
+            summaryDiv.textContent = data.summary;
+            listItem.appendChild(summaryDiv);
+        } catch (error) {
+            console.error("Error fetching summary:", error);
+        }
     }
 
     fetchAndDisplayNews();
