@@ -76,7 +76,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!response.ok) throw new Error("Failed to fetch summary");
 
         const data = await response.json();
-        console.log('Summary:', data.summary); // Debugging: Log response
+        console.log('Summary:', data.summary); // Log summary for debugging
+
         const summaryDiv = document.createElement('div');
         summaryDiv.classList.add('summary');
         summaryDiv.textContent = data.summary;
@@ -86,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
         alert("Error: Unable to fetch summary. Please check the server.");
     }
 }
+
 
     fetchAndDisplayNews();
 });
