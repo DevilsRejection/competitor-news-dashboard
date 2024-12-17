@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Function to fetch news for a single company with retry logic
   async function fetchNewsForCompany(company, retries = 2) {
-    const apiUrl = `http://127.0.0.1:3000/news?q=${company}`;
+    const apiUrl = `http://127.0.0.1:3000/news?q="${company}"`;
 
     while (retries > 0) {
       try {
