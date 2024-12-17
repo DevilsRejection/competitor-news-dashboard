@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const newsContainer = document.getElementById('news-container');
 
     async function fetchNewsForCompany(company) {
-        const apiUrl = `http://127.0.0.1:3000/news?q=${encodeURIComponent(company)}`;
+        const apiUrl = `http://127.0.0.1:3001/news?q=${encodeURIComponent(company)}`;
         try {
             const response = await fetch(apiUrl);
             if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function fetchSummary(content, listItem) {
     try {
-        const response = await fetch('http://127.0.0.1:3000/summarize', {
+        const response = await fetch('http://127.0.0.1:3001/summarize', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ content })
