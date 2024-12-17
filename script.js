@@ -1,82 +1,93 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const companies = ["Accenture", "TCS", "Deloitte", "Globant", "EPAM", "Endava"];
+  const companies = ["Accenture", "Tata Consultancy Services", "Deloitte", "Globant", "EPAM", "Endava"]; // Companies to track
   const newsContainer = document.getElementById('news-container');
-  const companySelect = document.getElementById('company-select');
 
-  async function fetchNewsForCompany(company) {
-    const apiUrl = `http://127.0.0.1:3000/news?q=${company}`;
+  // Function to fetch news for a single company with retry logic
+  async function fetchNewsForCompany(company, retries = 2) {
+    const apiUrl = `http://127.0.0.1:3000/news?q="${company}"`;
+
+    while (retries > 0) {
+      try {
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch news for ${company}: HTTP Status ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Ensure the response has valid articles
+        if (!data.articles || data.articles.length === 0) {
+          console.warn(`No articles found for ${company}`);
+          return { company, articles: [] };
+        }
+
+        // Filter and map articles with valid title and URL
+        const articles = data.articles
+          .filter(article => article.title && article.url) // Ensure valid title and URL
+          .map(article => ({
+            title: article.title,
+            link: article.url,
+          }));
+
+        return { company, articles };
+
+      } catch (error) {
+        console.error(`Error fetching news for ${company}:`, error);
+        retries--; // Retry logic
+      }
+    }
+
+    // If all retries fail, return empty articles
+    return { company, articles: [] };
+  }
+
+  // Function to fetch news for all companies and render on the page
+  async function fetchAndRenderNews() {
+    newsContainer.innerHTML = "<p>Loading news articles...</p>"; // Show loading message
+
     try {
-      const response = await fetch(apiUrl);
-      if (!response.ok) throw new Error(`Failed to fetch news for ${company}`);
-      const data = await response.json();
-      return data.articles || [];
+      const promises = companies.map(company => fetchNewsForCompany(company));
+      const newsData = await Promise.all(promises);
+
+      newsContainer.innerHTML = ""; // Clear the loading message
+
+      // Render the news for each company
+      newsData.forEach(companyData => {
+        const companyNewsDiv = document.createElement('div');
+        companyNewsDiv.classList.add('company-news');
+
+        const companyTitle = document.createElement('h2');
+        companyTitle.textContent = companyData.company;
+        companyNewsDiv.appendChild(companyTitle);
+
+        const articleList = document.createElement('ul');
+
+        if (companyData.articles.length > 0) {
+          companyData.articles.forEach(article => {
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = article.link;
+            link.textContent = article.title;
+            link.target = "_blank"; // Open in a new tab
+            listItem.appendChild(link);
+            articleList.appendChild(listItem);
+          });
+        } else {
+          const listItem = document.createElement('li');
+          listItem.textContent = `No relevant articles found for ${companyData.company}`;
+          articleList.appendChild(listItem);
+        }
+
+        companyNewsDiv.appendChild(articleList);
+        newsContainer.appendChild(companyNewsDiv);
+      });
     } catch (error) {
-      console.error(error);
-      return [];
+      console.error("Error fetching and rendering news:", error);
+      newsContainer.innerHTML = "<p>Failed to load news articles. Please try again later.</p>";
     }
   }
 
-  async function fetchAndRenderNews(selectedCompany = "all") {
-    newsContainer.innerHTML = "<p>Loading news articles...</p>";
-
-    const companiesToFetch = selectedCompany === "all" ? companies : [selectedCompany];
-    const promises = companiesToFetch.map(company => fetchNewsForCompany(company));
-    const newsData = await Promise.all(promises);
-
-    newsContainer.innerHTML = ""; // Clear loading message
-
-    const allArticles = [];
-
-    newsData.forEach((articles, index) => {
-      const companyName = companiesToFetch[index];
-      const companyDiv = document.createElement('div');
-      companyDiv.classList.add('company-news');
-      const companyTitle = document.createElement('h2');
-      companyTitle.textContent = companyName;
-
-      const articleList = document.createElement('ul');
-      if (articles.length > 0) {
-        articles.forEach(article => {
-          allArticles.push(article); // Collect all articles for summarization
-          const listItem = document.createElement('li');
-          const link = document.createElement('a');
-          link.href = article.url;
-          link.textContent = article.title;
-          link.target = "_blank";
-          listItem.appendChild(link);
-          articleList.appendChild(listItem);
-        });
-      } else {
-        const listItem = document.createElement('li');
-        listItem.textContent = `No articles found for ${companyName}`;
-        articleList.appendChild(listItem);
-      }
-
-      companyDiv.appendChild(companyTitle);
-      companyDiv.appendChild(articleList);
-      newsContainer.appendChild(companyDiv);
-    });
-
-    // Add summarization button
-    const summarizeButton = document.createElement('button');
-    summarizeButton.textContent = "Summarize Articles";
-    summarizeButton.onclick = () => fetchAndDisplaySummary(allArticles);
-    newsContainer.appendChild(summarizeButton);
-  }
-
-  async function fetchAndDisplaySummary(articles) {
-    const response = await fetch("http://127.0.0.1:3000/summarize", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ articles }),
-    });
-
-    const data = await response.json();
-    const summaryDiv = document.createElement('div');
-    summaryDiv.innerHTML = `<h3>Summary:</h3><p>${data.summary || "No summary available."}</p>`;
-    newsContainer.appendChild(summaryDiv);
-  }
-
-  companySelect.addEventListener('change', event => fetchAndRenderNews(event.target.value));
-  fetchAndRenderNews(); // Initial render
+  // Fetch and render news when the page loads
+  fetchAndRenderNews();
 });
