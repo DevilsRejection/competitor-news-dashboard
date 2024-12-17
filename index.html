@@ -5,14 +5,177 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Competitor News Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Minimalistic Styling */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+            width: 100%;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        main {
+            width: 90%;
+            max-width: 800px;
+            margin: 2em auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1em;
+        }
+
+        .dropdown-container {
+            text-align: center;
+            margin: 1em 0;
+        }
+
+        select {
+            padding: 0.5em;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .company-news {
+            margin-bottom: 2em;
+        }
+
+        .company-news h2 {
+            color: #4CAF50;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.5em;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 0.5em 0;
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Competitor News Dashboard</h1>
     </header>
+    
+    <!-- Dropdown for Company Selection -->
+    <div class="dropdown-container">
+        <label for="company-select">Select a Company:</label>
+        <select id="company-select">
+            <option value="all">All Companies</option>
+            <option value="Accenture">Accenture</option>
+            <option value="TCS">TCS</option>
+            <option value="Deloitte">Deloitte</option>
+            <option value="Globant">Globant</option>
+            <option value="EPAM">EPAM</option>
+            <option value="Endava">Endava</option>
+        </select>
+    </div>
+
+    <!-- News Container -->
     <main id="news-container">
-        <!-- News articles will be added here -->
+        <!-- News articles will be dynamically added here -->
     </main>
-    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const companies = ["Accenture", "TCS", "Deloitte", "Globant", "EPAM", "Endava"];
+            const newsContainer = document.getElementById('news-container');
+            const companySelect = document.getElementById('company-select');
+
+            async function fetchNewsForCompany(company) {
+                const apiUrl = `http://127.0.0.1:3000/news?q=${company}`;
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) throw new Error(`HTTP Status ${response.status}`);
+                    const data = await response.json();
+                    return data.articles || [];
+                } catch (error) {
+                    console.error(`Error fetching news for ${company}:`, error);
+                    return [];
+                }
+            }
+
+            async function fetchAndRenderNews(selectedCompany = "all") {
+                newsContainer.innerHTML = "<p>Loading news articles...</p>";
+
+                const companiesToFetch = selectedCompany === "all" ? companies : [selectedCompany];
+                const promises = companiesToFetch.map(company => fetchNewsForCompany(company));
+                const newsData = await Promise.all(promises);
+
+                newsContainer.innerHTML = ""; // Clear loading message
+
+                newsData.forEach((articles, index) => {
+                    const companyName = companiesToFetch[index];
+                    const companyNewsDiv = document.createElement('div');
+                    companyNewsDiv.classList.add('company-news');
+
+                    const companyTitle = document.createElement('h2');
+                    companyTitle.textContent = companyName;
+                    companyNewsDiv.appendChild(companyTitle);
+
+                    const articleList = document.createElement('ul');
+                    if (articles.length > 0) {
+                        articles.forEach(article => {
+                            const listItem = document.createElement('li');
+                            const link = document.createElement('a');
+                            link.href = article.url;
+                            link.textContent = article.title;
+                            link.target = "_blank";
+                            listItem.appendChild(link);
+                            articleList.appendChild(listItem);
+                        });
+                    } else {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `No articles found for ${companyName}`;
+                        articleList.appendChild(listItem);
+                    }
+
+                    companyNewsDiv.appendChild(articleList);
+                    newsContainer.appendChild(companyNewsDiv);
+                });
+            }
+
+            // Event listener for dropdown changes
+            companySelect.addEventListener('change', (event) => {
+                const selectedCompany = event.target.value;
+                fetchAndRenderNews(selectedCompany);
+            });
+
+            // Initial render for all companies
+            fetchAndRenderNews();
+        });
+    </script>
 </body>
 </html>
