@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!response.ok) throw new Error("Failed to fetch summary");
 
         const data = await response.json();
-        console.log('Summary:', data.summary); // Log summary for debugging
+        console.log("Sending content to summarize:", articleText);
 
         const summaryDiv = document.createElement('div');
         summaryDiv.classList.add('summary');
