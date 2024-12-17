@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const companies = ["Accenture", "TCS", "Deloitte", "Globant", "EPAM", "Endava"]; // Companies to track
+  const companies = ["Accenture", "Tata Consultancy Services", "Deloitte", "Globant", "EPAM", "Endava"]; // Companies to track
   const newsContainer = document.getElementById('news-container');
 
   // Function to fetch news for a single company with retry logic
