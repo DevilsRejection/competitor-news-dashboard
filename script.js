@@ -63,24 +63,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function fetchSummary(content, listItem) {
-        try {
-            const response = await fetch('http://127.0.0.1:3000/summarize', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content })
-            });
+    try {
+        const response = await fetch('http://127.0.0.1:3000/summarize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content })
+        });
 
-            if (!response.ok) throw new Error("Failed to fetch summary");
+        if (!response.ok) throw new Error("Failed to fetch summary");
 
-            const data = await response.json();
-            const summaryDiv = document.createElement('div');
-            summaryDiv.classList.add('summary');
-            summaryDiv.textContent = data.summary;
-            listItem.appendChild(summaryDiv);
-        } catch (error) {
-            console.error("Error fetching summary:", error);
-        }
+        const data = await response.json();
+        console.log('Summary:', data.summary); // Debugging: Log response
+        const summaryDiv = document.createElement('div');
+        summaryDiv.classList.add('summary');
+        summaryDiv.textContent = data.summary;
+        listItem.appendChild(summaryDiv);
+    } catch (error) {
+        console.error("Error fetching summary:", error);
+        alert("Error: Unable to fetch summary. Please check the server.");
     }
+}
 
     fetchAndDisplayNews();
 });
